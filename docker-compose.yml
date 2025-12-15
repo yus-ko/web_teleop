@@ -1,0 +1,31 @@
+services:
+  webapp:
+    build: 
+      context: ./webapp
+      dockerfile: Dockerfile
+    # ports:
+    #   - "3000:3000"
+    volumes:
+      - ./webapp:/app
+      - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      # - HOST=0.0.0.0
+    stdin_open: true
+    tty: true
+    network_mode: "host"
+
+  ros2joy:
+    # image: ros:humble
+    build: 
+      context: ./ros2app
+      dockerfile: Dockerfile
+    # ports:
+    #   - "3001:3001"
+    volumes:
+      - ./ros2app/ros2_ws:/root/ros2_ws
+    # environment:
+    #   - HOST=0.0.0.0
+    # command: bash
+    tty: true
+    network_mode: "host"
