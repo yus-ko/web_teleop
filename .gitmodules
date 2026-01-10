@@ -1,0 +1,3 @@
+[submodule "gamepad-viewer"]
+	path = gamepad-viewer
+	url = https://github.com/e7d/gamepad-viewer.git
