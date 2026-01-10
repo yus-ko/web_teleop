@@ -1,31 +1,31 @@
 services:
-  webapp:
-    build: 
-      context: ./webapp
-      dockerfile: Dockerfile
-    # ports:
-    #   - "3000:3000"
-    volumes:
-      - ./webapp:/app
-      - /app/node_modules
-    environment:
-      - CHOKIDAR_USEPOLLING=true
-      # - HOST=0.0.0.0
-    stdin_open: true
-    tty: true
-    network_mode: "host"
+    web:
+        image: nginx
+        ports:
+            - 8081:80
+        volumes:
+            - ./gamepad-extensions/index.html:/usr/share/nginx/html/index.html:ro
+            - ./gamepad-extensions/js:/usr/share/nginx/html/js:ro
+            - ./gamepad-extensions/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+            - ./gamepad-viewer:/usr/share/nginx/html/gamepad-viewer:ro
+        working_dir: /usr/share/nginx/html/gamepad-extensions
+    
+    str2joy:
+        build: 
+            context: ./ros2app
+            dockerfile: Dockerfile
+        ports:
+          - "8080:8080"
+        volumes:
+        - ./ros2app/ros2_ws:/root/ros2_ws
+        tty: true
+        command: ["bash", "-c", "source /opt/ros/humble/setup.bash && source /root/ros2_ws/install/setup.bash && colcon build && ros2 run websocket_receiver websocket_receiver"]
 
-  ros2joy:
-    # image: ros:humble
-    build: 
-      context: ./ros2app
-      dockerfile: Dockerfile
-    # ports:
-    #   - "3001:3001"
-    volumes:
-      - ./ros2app/ros2_ws:/root/ros2_ws
-    # environment:
-    #   - HOST=0.0.0.0
-    # command: bash
-    tty: true
-    network_mode: "host"
+    joy2cmd:
+        build: 
+            context: ./ros2app
+            dockerfile: Dockerfile
+        volumes:
+            - ./ros2app/xbox.config.yaml:/xbox.config.yaml
+        tty: true
+        command: ros2 launch teleop_twist_joy teleop-launch.py joy_config:='xbox' config_filepath:=/xbox.config.yaml
