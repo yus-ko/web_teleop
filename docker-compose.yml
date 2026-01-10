@@ -1,6 +1,7 @@
 services:
     web:
         image: nginx
+        container_name: web
         ports:
             - 8081:80
         volumes:
@@ -14,6 +15,7 @@ services:
         build: 
             context: ./ros2app
             dockerfile: Dockerfile
+        container_name: str2joy
         ports:
           - "8080:8080"
         volumes:
@@ -25,6 +27,7 @@ services:
         build: 
             context: ./ros2app
             dockerfile: Dockerfile
+        container_name: joy2cmd
         volumes:
             - ./ros2app/xbox.config.yaml:/xbox.config.yaml
         tty: true
