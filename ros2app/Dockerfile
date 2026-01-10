@@ -3,6 +3,7 @@ FROM ros:humble
 RUN apt-get update && apt-get install -y \
     vim \
     python3-pip \
+    ros-humble-teleop-twist-joy \
     && rm -rf /var/lib/apt/lists/* && \
     pip install websockets
 
